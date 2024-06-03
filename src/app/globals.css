@@ -16,9 +16,34 @@
   }
 }
 
+::-webkit-scrollbar {
+  /* Customize the scrollbar width */
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  /* Customize the scrollbar track */
+  background: transparent;
+
+}
+
+::-webkit-scrollbar-thumb {
+  /* Customize the scrollbar thumb */
+  background: #222222;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /* Customize the scrollbar thumb */
+  background: #000000;
+}
+
+
 body {
   color: rgb(var(--foreground-rgb));
   height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
   /* background: linear-gradient(
       to bottom,
       transparent,
