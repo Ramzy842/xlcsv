@@ -32,7 +32,7 @@ const Files = () => {
                     <Image src={`./assets/file.svg`} height={20} width={20} alt="files icon" />
                 </div>
 
-                <button className="flex items-center bg-black py-2 px-3">
+                <button className="flex items-center bg-black py-2 px-3 text-white">
                     Download All
                     <Image
                         className="ml-2"
