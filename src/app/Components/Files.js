@@ -4,7 +4,6 @@ import Image from "next/image";
 import File from "./File";
 
 const Files = () => {
-    const [filesPresent, setFilesPresent] = useState(true);
     const [files, setFiles] = useState([
         { id: 0, name: "File_1.csv" },
         { id: 1, name: "File_2.csv" },
@@ -44,7 +43,7 @@ const Files = () => {
                 </button>
             </div>
 
-            {filesPresent ? (
+            {files.length ? (
                 <div className="overflow-y-scroll h-[95%] pr-2">
                     {files.map((file) => {
                         return <File key={file.id} name={file.name} />;
