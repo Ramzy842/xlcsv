@@ -1,51 +1,38 @@
 
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx"
 
-const Uploader = ({data, setData}) => {
+const Uploader = ({setFiles}) => {
 	const [fileName, setFileName] = useState("")
 	const [fileSize, setFileSize] = useState("")
 	const [filePresent, setFilePresent] = useState(false)
-	// checker
-	const processFile = (file) => {
-		const fr = new FileReader();
-  
-		fr.readAsDataURL(file);
-		fr.addEventListener('loadstart', changeStatus('Start Loading'));
-		fr.addEventListener('load', changeStatus('Loaded'));
-		fr.addEventListener('loadend', loaded);
-		fr.addEventListener('progress', setProgress);
-		fr.addEventListener('error', errorHandler);
-		fr.addEventListener('abort', changeStatus('Interrupted'));
-	}
+
 	const delay = ms => new Promise(res => setTimeout(res, ms));
 	async function handler (e) {
-		
-		
 		const input = document.querySelector("input")
 		e.stopPropagation();
 		e.preventDefault();
 		let kinds = {folders: 0, files: 0}
 		if (input.files[0].type === "application/vnd.ms-excel")
 		{
-			const reader = new FileReader()
 			for (let x = 0; x < input.files.length; x++) {
-				reader.readAsBinaryString(input.files[x])
-				reader.onload = async (e) => {
-					const data = e.target.result
-					const wb = XLSX.read(data, {type: "binary"})
-					const sheetName = wb.SheetNames[0];
-					const sheet = wb.Sheets[sheetName]
-					const parsedData = XLSX.utils.sheet_to_json(sheet)
-					if(parsedData.length)
-					{
+				input.files[x].arrayBuffer().then((res) => {
+					let data = new Uint8Array(res);
+					let wb = XLSX.read(data, {type: "array"})
+					const first_sheet_name = wb.SheetNames[x];
+					let worksheet = wb.Sheets[first_sheet_name];
+					let jsonData = XLSX.utils.sheet_to_json(worksheet, {raw: true})
+					let newWorkSheet = XLSX.utils.json_to_sheet(jsonData)
+					let new_wb = XLSX.utils.book_new()
+					const fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf("."))
+					XLSX.utils.book_append_sheet(new_wb, newWorkSheet, fileNameWithoutExt)
+					delay(1000).then(() => {
 						setFilePresent(true)
-						await delay(1000)
-						setData(parsedData)
-					}
-				}
+						setFiles(prev => [...prev, {name: `${fileNameWithoutExt}.csv`, downloadReqs: {new_wb, fileNameWithoutExt: fileNameWithoutExt}}])
+					})
+				})
 				if (!input.files[x].type)
 					kinds = {...kinds, folders: kinds.folders + 1};
 				else
@@ -96,12 +83,10 @@ const Uploader = ({data, setData}) => {
 				</div>
 				 <div className="flex items-center justify-center cursor-pointer" onClick={handler}>
 					{!filePresent && <p className="mr-2">Start conversion</p>}
-					{filePresent ? <Image src={`./assets/check.svg`} width={20} height={20} className="cursor-pointer" alt="start-conversion"  /> : <Image src={`./assets/arrow-r.svg`} width={20} height={20} className="cursor-pointer" alt="start-conversion"  />} 
+					{filePresent ? <Image src={`./assets/check.svg`} width={20} height={20} className="cursor-pointer" alt="done conversion"  /> : <Image src={`./assets/arrow-r.svg`} width={20} height={20} className="cursor-pointer" alt="start conversion"  />} 
 				</div>
 			</div>}
 			{<input accept=".xls, .xlsx" className={`${fileName && "hidden"} text-white`} type="file" onChange={handleInput} />}
-			{/* </input> */}
-            
         </div>
     );
 };

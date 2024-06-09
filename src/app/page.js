@@ -5,12 +5,12 @@ import Header from "./Components/Header";
 import Uploader from "./Components/Uploader";
 
 export default function Home() {
-	const [data, setData] = useState([])
+	const [files, setFiles] = useState([])
     return (
         <>
             <Header />
-            <Uploader data={data} setData={setData} />
-            <Files data={data} />
+            <Uploader files={files} setFiles={setFiles} />
+            <Files files={files} />
         </>
     );
 }
