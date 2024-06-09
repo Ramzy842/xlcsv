@@ -31,7 +31,7 @@ const Files = ({data}) => {
                     <Image src={`./assets/file.svg`} height={20} width={20} alt="files icon" />
                 </div>
 
-                <button className="flex items-center bg-black py-2 px-3 text-white">
+                <button className={`${data.length ? "flex" : "hidden"} items-center bg-black py-2 px-3 text-white`}>
                     Download All
                     <Image
                         className="ml-2"
@@ -50,7 +50,7 @@ const Files = ({data}) => {
                     })}
                 </div>
             ) : (
-                <div className="h-full text-center p-24">
+                <div className="h-full text-center flex justify-center items-center">
                     <h1 className="text-7xl font-bold text-black">
                         No files yet
                     </h1>

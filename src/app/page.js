@@ -9,7 +9,7 @@ export default function Home() {
     return (
         <>
             <Header />
-            <Uploader setData={setData} />
+            <Uploader data={data} setData={setData} />
             <Files data={data} />
         </>
     );
