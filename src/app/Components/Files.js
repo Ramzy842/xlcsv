@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import File from "./File";
 
-const Files = () => {
-    const [files, setFiles] = useState([
+const Files = ({data}) => {
+    const [files, setFiles] = useState(/* [
         { id: 0, name: "File_1.csv" },
         { id: 1, name: "File_2.csv" },
         { id: 2, name: "File_3.csv" },
@@ -20,7 +20,7 @@ const Files = () => {
         { id: 12, name: "File_14.csv" },
         { id: 13, name: "File_15.csv" },
         { id: 14, name: "File_16.csv" },
-    ]);
+    ] */data);
     return (
         <div className="max-w-7xl bg-gradient-to-b from-cyan-500 to-blue-500 mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-3xl p-6 drop-shadow-2xl ">
             <div className="flex justify-between mb-2">
@@ -43,10 +43,10 @@ const Files = () => {
                 </button>
             </div>
 
-            {files.length ? (
+            {data.length ? (
                 <div className="overflow-y-scroll h-[95%] pr-2">
-                    {files.map((file) => {
-                        return <File key={file.id} name={file.name} />;
+                    {data.map((file, index) => {
+                        return <File obj={file} id={index + 1} key={index} name={file.name} />;
                     })}
                 </div>
             ) : (
