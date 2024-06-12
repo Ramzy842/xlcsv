@@ -8,13 +8,18 @@ const Uploader = ({ setFiles }) => {
     const [fileSize, setFileSize] = useState("");
     const [filePresent, setFilePresent] = useState(false);
 
-    const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+    // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
     async function handler(e) {
         const input = document.querySelector("input");
         e.stopPropagation();
         e.preventDefault();
         let kinds = { folders: 0, files: 0 };
-        if (input.files[0].type === "application/vnd.ms-excel") {
+        console.log(input.files[0].type);
+        if (
+            input.files[0].type === "application/vnd.ms-excel" ||
+            input.files[0].type ===
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ) {
             for (let x = 0; x < input.files.length; x++) {
                 input.files[x].arrayBuffer().then((res) => {
                     let data = new Uint8Array(res);
@@ -35,20 +40,18 @@ const Uploader = ({ setFiles }) => {
                         newWorkSheet,
                         fileNameWithoutExt
                     );
-					setFilePresent(true);
-                    delay(1000).then(() => {
-                        
-                        setFiles((prev) => [
-                            ...prev,
-                            {
-                                name: `${fileNameWithoutExt}.csv`,
-                                downloadReqs: {
-                                    new_wb,
-                                    fileNameWithoutExt: fileNameWithoutExt,
-                                },
+                    setFilePresent(true);
+
+                    setFiles((prev) => [
+                        ...prev,
+                        {
+                            name: `${fileNameWithoutExt}.csv`,
+                            downloadReqs: {
+                                new_wb,
+                                fileNameWithoutExt: fileNameWithoutExt,
                             },
-                        ]);
-                    });
+                        },
+                    ]);
                 });
                 if (!input.files[x].type)
                     kinds = { ...kinds, folders: kinds.folders + 1 };
@@ -68,6 +71,13 @@ const Uploader = ({ setFiles }) => {
         setFileSize(convertBytes(e.target.files[0].size));
     }
 
+    function handleRefresh() {
+        setFileName("");
+        setFileSize("");
+        setFilePresent(false);
+        const input = document.querySelector("input");
+        input.value = "";
+    }
     function convertBytes(value) {
         const units = {
             KB: 1024,
@@ -88,9 +98,13 @@ const Uploader = ({ setFiles }) => {
     return (
         <div
             id="upload-zone"
-            className={`w-56 flex flex-col items-center justify-center mx-auto mt-16 bg-black rounded-md p-4 drop-shadow-2xl max-w-xl ${fileName && !filePresent && "w-auto  border-b-2 border-yellow-400 "} ${filePresent && "border-b-2 w-auto border-green-500"}`}
+            className={`w-56 flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl	 rounded-md p-4 drop-shadow-2xl max-w-xl ${
+                fileName &&
+                !filePresent &&
+                "w-auto  border-b-4 border-yellow-500 "
+            } ${filePresent && "border-b-4 w-auto border-green-500"}`}
         >
-           {/*  {!fileName && (
+            {!filePresent && (
                 <>
                     <p className="font-semibold mb-4 text-white">
                         Drop Your Folder Here
@@ -103,7 +117,7 @@ const Uploader = ({ setFiles }) => {
                         alt="upload"
                     />
                 </>
-            )} */}
+            )}
             {fileName && (
                 <div className="flex text-white justify-between w-full  ">
                     <div className="w-3/5 max-w-md">
@@ -132,28 +146,35 @@ const Uploader = ({ setFiles }) => {
                         </div>
                     )}
                     {filePresent && (
-                        <div
-                            className="flex items-center justify-center select-none"
-                        >
+                        <div className="flex items-center justify-center select-none">
                             <Image
                                 src={`./assets/check.svg`}
                                 width={20}
                                 height={20}
-                                
                                 alt="done conversion"
                             />
                         </div>
                     )}
                 </div>
             )}
-            {
-                <input
-                    accept=".xls, .xlsx"
-                    className={`${fileName && "hidden"} text-white`}
-                    type="file"
-                    onChange={handleInput}
+
+            {/* <input
+                accept=".xls, .xlsx"
+                className={`${fileName && "hidden"} text-white`}
+                type="file"
+                onChange={handleInput}
+            /> */}
+
+            {fileName && (
+                <Image
+                    src={"./assets/refresh.svg"}
+                    className="cursor-pointer"
+                    width={20}
+                    height={20}
+                    alt="refresh"
+                    onClick={handleRefresh}
                 />
-            }
+            )}
         </div>
     );
 };

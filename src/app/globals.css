@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,24 +18,22 @@
 }
 
 ::-webkit-scrollbar {
-  /* Customize the scrollbar width */
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  /* Customize the scrollbar track */
+
   background: transparent;
 
 }
 
 ::-webkit-scrollbar-thumb {
-  /* Customize the scrollbar thumb */
   background: #222222;
   border-radius: 50px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  /* Customize the scrollbar thumb */
+
   background: #000000;
 }
 
@@ -51,7 +50,8 @@ body {
     )
     rgb(var(--background-start-rgb)); */
     /* background: rgba(7, 101, 114, 0.667); */
-    background: linear-gradient(to bottom right, rgb(18, 34, 128), rgb(59, 153, 174));
+    background: linear-gradient(to bottom right, #36C7E7, #1A5DC2);
+
 }
 
 @layer utilities {

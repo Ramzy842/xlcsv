@@ -5,22 +5,24 @@ import File from "./File";
 
 const Files = ({files}) => {
     return (
-        <div className="max-w-7xl bg-gradient-to-b from-cyan-500 to-blue-500 mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-3xl p-6 drop-shadow-2xl ">
+        <div className="max-w-6xl bg-files bg-cover bg-no-repeat mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-xl p-6 drop-shadow-2xl ">
+            {/* <div className="bg-black absolute top-0 left-0 right-0 bottom-0 opacity-50 rounded-t-xl">
+            </div> */}
             <div className="flex justify-between mb-2">
                 <div className="flex items-center">
-                    <h1 className="font-extrabold text-xl tracking-wide text-black mr-2">
+                    <h1 className="font-extrabold text-xl tracking-wide white mr-2 z-40">
                         Files
                     </h1>
-                    <Image src={`./assets/file.svg`} height={20} width={20} alt="files icon" />
+                    <Image src={`./assets/file.svg`} className="z-40" height={20} width={20} alt="files icon" />
                 </div>
 
-                <button className={`${files.length ? "flex" : "hidden"} items-center bg-black py-2 px-3 text-white`}>
+                <button className={`${files.length ? "flex" : "hidden"} items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm`}>
                     Download All
                     <Image
-                        className="ml-2"
+                        className="ml-3"
                         src={`./assets/downloadAll.svg`}
-                        height={20}
-                        width={20}
+                        height={18}
+                        width={18}
                         alt="download all files"
                     />
                 </button>
@@ -34,7 +36,7 @@ const Files = ({files}) => {
                 </div>
             ) : (
                 <div className="h-full text-center flex justify-center items-center">
-                    <h1 className="text-7xl font-bold text-black">
+                    <h1 className="text-7xl font-bold text-white  z-40">
                         No files yet
                     </h1>
                 </div>
