@@ -11,7 +11,8 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "files": "url('/assets/nature.jpg')",
+        "files": "url('/assets/files_poly.jpg')",
+        "home": "url('/assets/landscape.jpg')",
       },
       fontFamily: {
         orbitron: ["Orbitron", "sans-serif"]

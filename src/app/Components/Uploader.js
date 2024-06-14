@@ -1,27 +1,46 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx";
 
+// function countDropped(kinds) {
+//     if (kinds.folders == 1) console.log("You dropped 1 folder.");
+//     else if (kinds.files == 1) console.log("You dropped 1 file.");
+//     else if (kinds.folders > 1)
+//         console.log(`You dropped ${kinds.folders} folders!`);
+//     else if (kinds.files > 1) console.log(`You dropped ${kinds.files} files!`);
+// }
+
 const Uploader = ({ setFiles }) => {
+    let kinds = { folders: 0, files: 0 };
     const [fileName, setFileName] = useState("");
     const [fileSize, setFileSize] = useState("");
     const [filePresent, setFilePresent] = useState(false);
-
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-    async function handler(e) {
-        const input = document.querySelector("input");
+
+    function handleUploadedFiles(e) {
         e.stopPropagation();
         e.preventDefault();
-        let kinds = { folders: 0, files: 0 };
-        console.log(input.files[0].type);
-        if (
-            input.files[0].type === "application/vnd.ms-excel" ||
-            input.files[0].type ===
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        ) {
-            for (let x = 0; x < input.files.length; x++) {
-                input.files[x].arrayBuffer().then((res) => {
+        setUploadedFiles(e.dataTransfer.files);
+        if (uploadedFiles && uploadedFiles[0]) handleInput();
+    }
+
+    useEffect(() => {
+        if (uploadedFiles.length && uploadedFiles[0]) handleInput();
+        console.log(uploadedFiles);
+    }, [uploadedFiles]);
+
+    function handler(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        for (let x = 0; x < uploadedFiles.length; x++) {
+            const isCorrectFileExt =
+                uploadedFiles[x].type === "application/vnd.ms-excel" ||
+                uploadedFiles[x].type ===
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            if (uploadedFiles[x].type && isCorrectFileExt) {
+                uploadedFiles[x].arrayBuffer().then((res) => {
                     let data = new Uint8Array(res);
                     let wb = XLSX.read(data, { type: "array" });
                     const first_sheet_name = wb.SheetNames[x];
@@ -31,52 +50,44 @@ const Uploader = ({ setFiles }) => {
                     });
                     let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
                     let new_wb = XLSX.utils.book_new();
-                    const fileNameWithoutExt = fileName.substring(
-                        0,
-                        fileName.lastIndexOf(".")
-                    );
-                    XLSX.utils.book_append_sheet(
-                        new_wb,
-                        newWorkSheet,
-                        fileNameWithoutExt
-                    );
-                    setFilePresent(true);
-
-                    setFiles((prev) => [
-                        ...prev,
-                        {
-                            name: `${fileNameWithoutExt}.csv`,
-                            downloadReqs: {
-                                new_wb,
-                                fileNameWithoutExt: fileNameWithoutExt,
+                    if (uploadedFiles[x]) {
+                        const temp_name = uploadedFiles[x].name;
+                        const fileNameWithoutExt = uploadedFiles[
+                            x
+                        ].name.substring(0, temp_name.lastIndexOf("."));
+                        XLSX.utils.book_append_sheet(
+                            new_wb,
+                            newWorkSheet,
+                            fileNameWithoutExt
+                        );
+                        setFilePresent(true);
+                        setFiles((prev) => [
+                            ...prev,
+                            {
+                                name: `${fileNameWithoutExt}.csv`,
+                                downloadReqs: {
+                                    new_wb,
+                                    fileNameWithoutExt: fileNameWithoutExt,
+                                },
                             },
-                        },
-                    ]);
+                        ]);
+                    }
                 });
-                if (!input.files[x].type)
-                    kinds = { ...kinds, folders: kinds.folders + 1 };
-                else kinds = { ...kinds, files: kinds.files + 1 };
             }
-            if (kinds.folders == 1) console.log("You dropped 1 folder.");
-            else if (kinds.files == 1) console.log("You dropped 1 file.");
-            else if (kinds.folders > 1)
-                console.log(`You dropped ${kinds.folders} folders!`);
-            else if (kinds.files > 1)
-                console.log(`You dropped ${kinds.files} files!`);
         }
     }
 
-    function handleInput(e) {
-        setFileName(e.target.files[0].name);
-        setFileSize(convertBytes(e.target.files[0].size));
+    function handleInput() {
+        setFileName(uploadedFiles[uploadedFiles.length - 1].name);
+        setFileSize(convertBytes(uploadedFiles[uploadedFiles.length - 1].size));
     }
 
     function handleRefresh() {
         setFileName("");
         setFileSize("");
         setFilePresent(false);
-        const input = document.querySelector("input");
-        input.value = "";
+        setUploadedFiles([]);
+        setFiles([]);
     }
     function convertBytes(value) {
         const units = {
@@ -104,28 +115,16 @@ const Uploader = ({ setFiles }) => {
                 "w-auto  border-b-4 border-yellow-500 "
             } ${filePresent && "border-b-4 w-auto border-green-500"}`}
         >
-            {!filePresent && (
+            {!uploadedFiles.length && (
                 <div
                     className="flex flex-col items-center"
-                    onDragEnter={(e) => {
-                        e.preventDefault();
-                        console.log("DROPPING ENTER");
-                    }}
-                    onDragOver={(e) => {
-                        e.preventDefault();
-                        console.log("DROPPING OVER");
-                    }}
-                    onDrop={(e) => {
-                        e.preventDefault();
-                        console.log("DROPPING DROP");
-                    }}
-                    onDragLeave={(e) => {
-                        e.preventDefault();
-                        console.log("DROPPING LEAVE");
-                    }}
+                    onDragEnter={handleUploadedFiles}
+                    onDragOver={handleUploadedFiles}
+                    onDrop={handleUploadedFiles}
+                    onDragLeave={handleUploadedFiles}
                 >
                     <p className="font-semibold mb-4 text-white">
-                        Drop Your Folder Here
+                        Drop Your Files Here
                     </p>
                     <Image
                         src={`./assets/upload.svg`}
