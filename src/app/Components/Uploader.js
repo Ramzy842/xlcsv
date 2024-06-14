@@ -105,7 +105,25 @@ const Uploader = ({ setFiles }) => {
             } ${filePresent && "border-b-4 w-auto border-green-500"}`}
         >
             {!filePresent && (
-                <>
+                <div
+                    className="flex flex-col items-center"
+                    onDragEnter={(e) => {
+                        e.preventDefault();
+                        console.log("DROPPING ENTER");
+                    }}
+                    onDragOver={(e) => {
+                        e.preventDefault();
+                        console.log("DROPPING OVER");
+                    }}
+                    onDrop={(e) => {
+                        e.preventDefault();
+                        console.log("DROPPING DROP");
+                    }}
+                    onDragLeave={(e) => {
+                        e.preventDefault();
+                        console.log("DROPPING LEAVE");
+                    }}
+                >
                     <p className="font-semibold mb-4 text-white">
                         Drop Your Folder Here
                     </p>
@@ -116,7 +134,7 @@ const Uploader = ({ setFiles }) => {
                         className="cursor-pointer"
                         alt="upload"
                     />
-                </>
+                </div>
             )}
             {fileName && (
                 <div className="flex text-white justify-between w-full  ">
