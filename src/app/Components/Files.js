@@ -1,9 +1,10 @@
 "use client";
 // import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import Image from "next/image";
 import File from "./File";
 
-const Files = ({files}) => {
+const Files = ({ files }) => {
     return (
         <div className="max-w-6xl bg-files bg-cover bg-no-repeat mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-xl p-6 drop-shadow-2xl ">
             {/* <div className="bg-black absolute top-0 left-0 right-0 bottom-0 opacity-50 rounded-t-xl">
@@ -13,10 +14,28 @@ const Files = ({files}) => {
                     <h1 className="font-extrabold text-xl tracking-wide white mr-2 z-40">
                         Files
                     </h1>
-                    <Image src={`./assets/file.svg`} className="z-40" height={20} width={20} alt="files icon" />
+                    <Image
+                        src={`./assets/file.svg`}
+                        className="z-40"
+                        height={20}
+                        width={20}
+                        alt="files icon"
+                    />
                 </div>
 
-                <button className={`${files.length ? "flex" : "hidden"} items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm`}>
+                <button
+                    onClick={() => {
+                        files.forEach((element) => {
+                            XLSX.writeFile(
+                                element.downloadReqs.new_wb,
+                                element.downloadReqs.fileNameWithoutExt + ".csv"
+                            );
+                        });
+                    }}
+                    className={`${
+                        files.length ? "flex" : "hidden"
+                    } items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm`}
+                >
                     Download All
                     <Image
                         className="ml-3"

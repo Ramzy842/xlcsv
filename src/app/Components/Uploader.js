@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx";
+import Error from "./Error";
 
 // function countDropped(kinds) {
 //     if (kinds.folders == 1) console.log("You dropped 1 folder.");
@@ -28,12 +29,12 @@ const Uploader = ({ setFiles }) => {
 
     useEffect(() => {
         if (uploadedFiles.length && uploadedFiles[0]) handleInput();
-        console.log(uploadedFiles);
     }, [uploadedFiles]);
 
     function handler(e) {
         e.stopPropagation();
         e.preventDefault();
+
         for (let x = 0; x < uploadedFiles.length; x++) {
             const isCorrectFileExt =
                 uploadedFiles[x].type === "application/vnd.ms-excel" ||
@@ -109,7 +110,7 @@ const Uploader = ({ setFiles }) => {
     return (
         <div
             id="upload-zone"
-            className={`w-56 flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl	 rounded-md p-4 drop-shadow-2xl max-w-xl ${
+            className={`w-56 flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
                 fileName &&
                 !filePresent &&
                 "w-auto  border-b-4 border-yellow-500 "
@@ -123,13 +124,13 @@ const Uploader = ({ setFiles }) => {
                     onDrop={handleUploadedFiles}
                     onDragLeave={handleUploadedFiles}
                 >
-                    <p className="font-semibold mb-4 text-white">
+                    <p className="font-semibold mb-4 text-white ">
                         Drop Your Files Here
                     </p>
                     <Image
                         src={`./assets/upload.svg`}
-                        width={32}
-                        height={32}
+                        width={24}
+                        height={24}
                         className="cursor-pointer"
                         alt="upload"
                     />
