@@ -14,14 +14,6 @@ const Files = ({ files }) => {
                     <h1 className="font-extrabold text-xl tracking-wide white mr-2 z-40">
                         Files
                     </h1>
-<<<<<<< HEAD
-                    <Image src={`./assets/file.svg`} className="z-40" height={20} width={20} alt="files icon" />
-                </div>
-
-                <button className={`${files.length ? "flex" : "hidden"} items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm`}>
-                    Download All
-                    <Image
-=======
                     <Image
                         src={`./assets/file.svg`}
                         className="z-40"
@@ -46,7 +38,6 @@ const Files = ({ files }) => {
                 >
                     Download All
                     <Image
->>>>>>> dnd
                         className="ml-3"
                         src={`./assets/downloadAll.svg`}
                         height={18}

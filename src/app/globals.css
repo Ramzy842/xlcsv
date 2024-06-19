@@ -51,14 +51,9 @@ body {
     )
     rgb(var(--background-start-rgb)); */
     /* background: rgba(7, 101, 114, 0.667); */
-<<<<<<< HEAD
-    background: linear-gradient(to bottom right, #36C7E7, #1A5DC2);
-
-=======
     /* background: linear-gradient(to bottom right, #36C7E7, #1A5DC2); */
     background-image: url("/assets/mystical.jpg");
     background-size: cover;
->>>>>>> dnd
 }
 
 @layer utilities {

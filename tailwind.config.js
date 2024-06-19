@@ -12,10 +12,7 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "files": "url('/assets/nature.jpg')",
-<<<<<<< HEAD
-=======
         // "home": "url('/assets/landscape.jpg')",
->>>>>>> dnd
       },
       fontFamily: {
         orbitron: ["Orbitron", "sans-serif"]
