@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx";
 import Error from "./Error";
+import { TimerContext } from "../Context";
 
 // function countDropped(kinds) {
 //     if (kinds.folders == 1) console.log("You dropped 1 folder.");
@@ -13,28 +14,49 @@ import Error from "./Error";
 // }
 
 const Uploader = ({ setFiles }) => {
-    let kinds = { folders: 0, files: 0 };
     const [fileName, setFileName] = useState("");
     const [fileSize, setFileSize] = useState("");
     const [filePresent, setFilePresent] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [dropStatus, setDropStatus] = useState("");
+    const { setElapsedTime, setIsActive } = useContext(TimerContext);
     // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-console.log("hahaha");
+    function GetFileTree(item, path) {
+        path = path || "";
+        if (item.isFile) {
+            item.file(function (file) {
+                setUploadedFiles((prev) => [...prev, file]);
+            });
+        } else if (item.isDirectory) {
+            // Get folder contents
+            let dirReader = item.createReader();
+            dirReader.readEntries(function (entries) {
+                for (let x = 0; x < entries.length; x++) {
+                    GetFileTree(entries[x], path + item.name + "/");
+                }
+            });
+        }
+    }
     function handleUploadedFiles(e) {
         e.stopPropagation();
         e.preventDefault();
-        setUploadedFiles(e.dataTransfer.files);
-        if (uploadedFiles && uploadedFiles[0]) handleInput();
+        if (e.type === "dragleave") setDropStatus("");
+        if (e.type === "dragenter" || e.type === "dragover")
+            setDropStatus("border-2 border-green-400");
+        let items = e.dataTransfer.items;
+        for (let x = 0; x < items.length; x++) {
+            let item = items[x].webkitGetAsEntry();
+            if (item) GetFileTree(item);
+        }
     }
 
     useEffect(() => {
         if (uploadedFiles.length && uploadedFiles[0]) handleInput();
     }, [uploadedFiles]);
-
     function handler(e) {
         e.stopPropagation();
         e.preventDefault();
-
+        setIsActive(true);
         for (let x = 0; x < uploadedFiles.length; x++) {
             const isCorrectFileExt =
                 uploadedFiles[x].type === "application/vnd.ms-excel" ||
@@ -72,6 +94,7 @@ console.log("hahaha");
                                 },
                             },
                         ]);
+                        setIsActive(false);
                     }
                 });
             }
@@ -79,6 +102,7 @@ console.log("hahaha");
     }
 
     function handleInput() {
+        setDropStatus("");
         setFileName(uploadedFiles[uploadedFiles.length - 1].name);
         setFileSize(convertBytes(uploadedFiles[uploadedFiles.length - 1].size));
     }
@@ -89,6 +113,8 @@ console.log("hahaha");
         setFilePresent(false);
         setUploadedFiles([]);
         setFiles([]);
+        setIsActive(false);
+        setElapsedTime(0);
     }
     function convertBytes(value) {
         const units = {
@@ -114,7 +140,9 @@ console.log("hahaha");
                 fileName &&
                 !filePresent &&
                 "w-auto  border-b-4 border-yellow-500 "
-            } ${filePresent && "border-b-4 w-auto border-green-500"}`}
+            } ${
+                filePresent && "border-b-4 w-auto border-green-500"
+            } ${dropStatus}`}
         >
             {!uploadedFiles.length && (
                 <div
@@ -131,7 +159,7 @@ console.log("hahaha");
                         src={`./assets/upload.svg`}
                         width={24}
                         height={24}
-                        className="cursor-pointer"
+                        className="select-none"
                         alt="upload"
                     />
                 </div>

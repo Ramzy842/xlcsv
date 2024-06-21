@@ -1,18 +1,23 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Files from "./Components/Files";
 import Header from "./Components/Header";
 import Uploader from "./Components/Uploader";
 import Error from "./Components/Error";
+import Timer from "./Components/Timer";
+import { TimerProvider } from "./Context";
 
 export default function Home() {
-	const [files, setFiles] = useState([])
+    const [files, setFiles] = useState([]);
     return (
         <>
             <Header />
-            <Uploader files={files} setFiles={setFiles} />
-            {/* <Error file /> */}
-            {files && files.length > 0 && <Files files={files} />} 
+            <TimerProvider>
+                <Uploader files={files} setFiles={setFiles} />
+                <Timer files={files} />
+            </TimerProvider>
+
+            {files && files.length && <Files files={files} />}
         </>
     );
 }

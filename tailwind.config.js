@@ -15,6 +15,7 @@ module.exports = {
         // "home": "url('/assets/landscape.jpg')",
       },
       fontFamily: {
+        Poppins: ["Poppins", "sans-serif"],
         orbitron: ["Orbitron", "sans-serif"]
       }
     },
