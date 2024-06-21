@@ -19,7 +19,7 @@ const Uploader = ({ setFiles }) => {
     const [filePresent, setFilePresent] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
+console.log("hahaha");
     function handleUploadedFiles(e) {
         e.stopPropagation();
         e.preventDefault();
