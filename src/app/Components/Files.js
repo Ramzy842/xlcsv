@@ -34,7 +34,7 @@ const Files = ({ files }) => {
                     }}
                     className={`${
                         files.length ? "flex" : "hidden"
-                    } items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm`}
+                    } items-center bg-black py-2 px-3 text-sm text-white z-40 rounded-sm hover:bg-green-600 group transition-all`}
                 >
                     Download All
                     <Image
