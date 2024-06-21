@@ -17,7 +17,7 @@ export default function Home() {
                 <Timer files={files} />
             </TimerProvider>
 
-            {files && files.length && <Files files={files} />}
+            <Files files={files} />
         </>
     );
 }
