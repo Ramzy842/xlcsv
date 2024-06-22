@@ -4,24 +4,20 @@ import Image from "next/image";
 import * as XLSX from "xlsx";
 import { TimerContext } from "../Context";
 
-// function countDropped(kinds) {
-//     if (kinds.folders == 1) console.log("You dropped 1 folder.");
-//     else if (kinds.files == 1) console.log("You dropped 1 file.");
-//     else if (kinds.folders > 1)
-//         console.log(`You dropped ${kinds.folders} folders!`);
-//     else if (kinds.files > 1) console.log(`You dropped ${kinds.files} files!`);
-// }
-
-const Uploader = ({ files, setFiles, setErr, err }) => {
+const Uploader = ({
+    files,
+    setFiles,
+    setErr,
+    err,
+    folderName,
+    setFolderName,
+}) => {
     const [fileName, setFileName] = useState("");
     const [fileSize, setFileSize] = useState("");
     const [filePresent, setFilePresent] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [dropStatus, setDropStatus] = useState("");
-    const [folderName, setFolderName] = useState("");
     const { setElapsedTime, setIsActive } = useContext(TimerContext);
-
-    // const delay = (ms) => new Promise((res) => setTimeout(res, ms));
     function GetFileTree(item, path) {
         path = path || "";
         if (item.isFile) {
@@ -43,7 +39,8 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
         e.stopPropagation();
         e.preventDefault();
         if (e.type === "dragenter" || e.type === "dragover")
-            setDropStatus("border-2 border-green-400");
+            setDropStatus("border-4 border-green-400");
+        else setDropStatus("");
         let items = e.dataTransfer.items;
         for (let x = 0; x < items.length; x++) {
             let item = items[x].webkitGetAsEntry();
@@ -67,42 +64,41 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
                 uploadedFiles[x].type === "application/vnd.ms-excel" ||
                 uploadedFiles[x].type ===
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
             if (uploadedFiles[x].type && isCorrectFileExt) {
                 uploadedFiles[x]
                     .arrayBuffer()
                     .then((res) => {
                         let data = new Uint8Array(res);
                         let wb = XLSX.read(data, { type: "array" });
-                        const first_sheet_name = wb.SheetNames[x];
+                        const first_sheet_name = wb.SheetNames[0];
                         let worksheet = wb.Sheets[first_sheet_name];
                         let jsonData = XLSX.utils.sheet_to_json(worksheet, {
                             raw: true,
                         });
                         let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
                         let new_wb = XLSX.utils.book_new();
-                        if (uploadedFiles[x]) {
-                            const temp_name = uploadedFiles[x].name;
-                            const fileNameWithoutExt = uploadedFiles[
-                                x
-                            ].name.substring(0, temp_name.lastIndexOf("."));
-                            XLSX.utils.book_append_sheet(
-                                new_wb,
-                                newWorkSheet,
-                                fileNameWithoutExt
-                            );
-                            setFilePresent(true);
-                            setFiles((prev) => [
-                                ...prev,
-                                {
-                                    name: `${fileNameWithoutExt}.csv`,
-                                    downloadReqs: {
-                                        new_wb,
-                                        fileNameWithoutExt: fileNameWithoutExt,
-                                    },
+                        const temp_name = uploadedFiles[x].name;
+                        const fileNameWithoutExt = uploadedFiles[
+                            x
+                        ].name.substring(0, temp_name.lastIndexOf("."));
+                        XLSX.utils.book_append_sheet(
+                            new_wb,
+                            newWorkSheet,
+                            fileNameWithoutExt
+                        );
+                        setFilePresent(true);
+                        setFiles((prev) => [
+                            ...prev,
+                            {
+                                name: `${fileNameWithoutExt}.csv`,
+                                downloadReqs: {
+                                    new_wb,
+                                    fileNameWithoutExt: fileNameWithoutExt,
                                 },
-                            ]);
-                            setIsActive(false);
-                        }
+                            },
+                        ]);
+                        setIsActive(false);
                     })
                     .catch(handleErr);
             }
@@ -132,7 +128,7 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
         setElapsedTime(0);
         setIsActive(false);
         setErr("");
-        setFolderName("")
+        setFolderName("");
     }
     function convertBytes(value) {
         const units = {
@@ -154,17 +150,20 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
     return (
         <div
             id="upload-zone"
-            className={`w-56 flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
+            className={`${
+                !fileName && "w-120 h-40"
+            } flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
                 fileName &&
-                !filePresent && !err &&
-                "w-auto  border-b-4 border-yellow-500 "
+                !filePresent &&
+                !err &&
+                "w-auto h-auto border-b-4 border-yellow-500 "
             } ${
                 filePresent && !err && "border-b-4 w-auto border-green-500"
             } ${dropStatus} ${err && "border-b-4 w-auto border-red-500"} `}
         >
             {!uploadedFiles.length && (
                 <div
-                    className="flex flex-col items-center"
+                    className="flex flex-col items-center w-full h-full justify-center"
                     onDragEnter={handleUploadedFiles}
                     onDragOver={handleUploadedFiles}
                     onDrop={handleUploadedFiles}
@@ -185,7 +184,7 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
             {fileName && (
                 <div className="flex text-white justify-between w-full  ">
                     <div className="w-3/5 max-w-md">
-                        <div className="flex items-center">
+                        <div className="flex items-center mb-2">
                             <Image
                                 className="mr-2"
                                 src={`./assets/folder.svg`}
@@ -210,7 +209,9 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
                             />
                             <p className="font-bold truncate">
                                 Size:{" "}
-                                <span className="font-normal ml-1">{fileSize}</span>
+                                <span className="font-normal ml-1">
+                                    {fileSize}
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -235,7 +236,7 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
                                 src={`./assets/check.svg`}
                                 width={20}
                                 height={20}
-                                alt="Done conversion"
+                                alt="Conversion done"
                             />
                         </div>
                     )}
@@ -245,20 +246,12 @@ const Uploader = ({ files, setFiles, setErr, err }) => {
                                 src={`./assets/x.svg`}
                                 width={24}
                                 height={24}
-                                alt="Failed conversion"
+                                alt="Conversion Failed"
                             />
                         </div>
                     )}
                 </div>
             )}
-
-            {/* <input
-                accept=".xls, .xlsx"
-                className={`${fileName && "hidden"} text-white`}
-                type="file"
-                onChange={handleInput}
-            /> */}
-
             {fileName && (
                 <Image
                     src={"./assets/refresh.svg"}
