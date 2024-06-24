@@ -40,15 +40,13 @@ const Header = ({ err }) => {
     return (
         <div
             key={progressBarWidth}
-            className={`bg-gradient-to-r from-yellow-500 to-green-500 text-center pb-1 text-white drop-shadow-lg`}
+            className={`bg-gradient-to-r from-yellow-500 to-green-500 text-center pb-0.5 text-white drop-shadow-lg`}
             style={{
                 transition: "width 0.3s ease-in-out",
                 width: `${progressBarWidth}%`,
             }}
         >
-            <div className="bg-black font-orbitron text-2xl py-1 tracking-[.5em] w-screen">
-                XLCSV
-            </div>
+            <a className="bg-black font-orbitron text-2xl py-1 tracking-[.5em] w-screen block" href="/">XLCSV</a>
         </div>
     );
 };
