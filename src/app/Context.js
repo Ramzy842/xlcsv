@@ -7,10 +7,14 @@ export const TimerProvider = ({ children }) => {
     const [elapsedTime, setElapsedTime] = useState(0);
 
     return (
-        <TimerContext.Provider value={{ isActive, setIsActive, elapsedTime, setElapsedTime }}>
+        <TimerContext.Provider
+            value={{ isActive, setIsActive, elapsedTime, setElapsedTime }}
+        >
             {children}
         </TimerContext.Provider>
     );
 };
 
-export { TimerContext };
+
+
+export { TimerContext};

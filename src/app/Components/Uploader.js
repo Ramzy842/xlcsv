@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx";
 import { TimerContext } from "../Context";
+import { convertBytes, getTotalSize } from "../utils";
 
 const Uploader = ({
     files,
@@ -11,13 +12,15 @@ const Uploader = ({
     err,
     folderName,
     setFolderName,
+    uploadedFiles,
+    setUploadedFiles,
 }) => {
     const [fileName, setFileName] = useState("");
+    const [tempFiles, setTempFiles] = useState([]);
     const [fileSize, setFileSize] = useState("");
-    const [filePresent, setFilePresent] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
     const [dropStatus, setDropStatus] = useState("");
-    const { setElapsedTime, setIsActive } = useContext(TimerContext);
+    const { setElapsedTime, setIsActive, isActive } = useContext(TimerContext);
+
     function GetFileTree(item, path) {
         path = path || "";
         if (item.isFile) {
@@ -25,7 +28,6 @@ const Uploader = ({
                 setUploadedFiles((prev) => [...prev, file]);
             });
         } else if (item.isDirectory) {
-            // Get folder contents
             setFolderName(item.name);
             let dirReader = item.createReader();
             dirReader.readEntries(function (entries) {
@@ -52,9 +54,47 @@ const Uploader = ({
         if (uploadedFiles.length && uploadedFiles[0]) handleInput();
         setDropStatus("");
     }, [uploadedFiles]);
+
     useEffect(() => {
-        setFiles([]);
-    }, [err]);
+        if (
+            tempFiles.length &&
+            tempFiles.length === uploadedFiles.length &&
+            !err
+        ) {
+            setFiles(tempFiles);
+            setIsActive(false);
+        }
+    }, [tempFiles]);
+
+    function convertFile(res, file) {
+        let data = new Uint8Array(res);
+        let wb = XLSX.read(data, { type: "array" });
+        const first_sheet_name = wb.SheetNames[0];
+        let worksheet = wb.Sheets[first_sheet_name];
+        let jsonData = XLSX.utils.sheet_to_json(worksheet, {
+            raw: true,
+        });
+        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
+        let new_wb = XLSX.utils.book_new();
+        let temp_name = null;
+        if (file) temp_name = file.name;
+        const fileNameWithoutExt = temp_name.substring(
+            0,
+            temp_name.lastIndexOf(".")
+        );
+        XLSX.utils.book_append_sheet(new_wb, newWorkSheet, fileNameWithoutExt);
+        setTempFiles((prev) => [
+            ...prev,
+            {
+                name: `${fileNameWithoutExt}.csv`,
+                downloadReqs: {
+                    new_wb,
+                    fileNameWithoutExt: fileNameWithoutExt,
+                },
+            },
+        ]);
+    }
+
     function handler(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -68,97 +108,52 @@ const Uploader = ({
             if (uploadedFiles[x].type && isCorrectFileExt) {
                 uploadedFiles[x]
                     .arrayBuffer()
-                    .then((res) => {
-                        let data = new Uint8Array(res);
-                        let wb = XLSX.read(data, { type: "array" });
-                        const first_sheet_name = wb.SheetNames[0];
-                        let worksheet = wb.Sheets[first_sheet_name];
-                        let jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                            raw: true,
-                        });
-                        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
-                        let new_wb = XLSX.utils.book_new();
-                        const temp_name = uploadedFiles[x].name;
-                        const fileNameWithoutExt = uploadedFiles[
-                            x
-                        ].name.substring(0, temp_name.lastIndexOf("."));
-                        XLSX.utils.book_append_sheet(
-                            new_wb,
-                            newWorkSheet,
-                            fileNameWithoutExt
-                        );
-                        setFilePresent(true);
-                        setFiles((prev) => [
-                            ...prev,
-                            {
-                                name: `${fileNameWithoutExt}.csv`,
-                                downloadReqs: {
-                                    new_wb,
-                                    fileNameWithoutExt: fileNameWithoutExt,
-                                },
-                            },
-                        ]);
-                        setIsActive(false);
-                    })
+                    .then((res) => convertFile(res, uploadedFiles[x]))
                     .catch(handleErr);
             }
         }
     }
+
     function handleErr(err) {
+        setIsActive(false);
         if (err.message === "Sheet name cannot exceed 31 chars")
             setErr("File name should not exceed 31 letters");
         else setErr(err.message);
+        setFiles([]);
     }
     function handleInput() {
         setDropStatus("");
         setFileName(uploadedFiles[uploadedFiles.length - 1].name);
-        getTotalSize();
-    }
-    function getTotalSize() {
-        let sizes = uploadedFiles.map((file) => Number(file.size));
-        const result = sizes.reduce((prev, next) => prev + next);
-        setFileSize(convertBytes(result));
+        const size = getTotalSize(uploadedFiles);
+        setFileSize(convertBytes(size));
     }
     function handleRefresh() {
         setFileName("");
         setFileSize("");
-        setFilePresent(false);
         setUploadedFiles([]);
         setFiles([]);
+        setTempFiles([]);
         setElapsedTime(0);
         setIsActive(false);
         setErr("");
         setFolderName("");
-    }
-    function convertBytes(value) {
-        const units = {
-            KB: 1024,
-            MB: 1024 * 1024,
-            GB: 1024 * 1024 * 1024,
-        };
-
-        if (value === 0) return "0 Bytes";
-        const bytes = value;
-        const i = Math.floor(Math.log(bytes) / Math.log(units.KB));
-        const formattedValue = (bytes / Math.pow(units.KB, i)).toFixed(1);
-
-        const unit =
-            i >= units.GB / units.KB ? "GB" : ["Bytes", "KB", "MB", "GB"][i];
-        return formattedValue + " " + unit;
     }
 
     return (
         <div
             id="upload-zone"
             className={`${
-                !fileName && "w-120 h-40"
+                !fileName && "w-120 h-40 p-0"
             } flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
                 fileName &&
-                !filePresent &&
+                !files.length &&
                 !err &&
                 "w-auto h-auto border-b-4 border-yellow-500 "
             } ${
-                filePresent && !err && "border-b-4 w-auto border-green-500"
+                files.length &&
+                files.length === uploadedFiles.length &&
+                !err &&
+                "border-b-4 w-auto border-green-500"
             } ${dropStatus} ${err && "border-b-4 w-auto border-red-500"} `}
         >
             {!uploadedFiles.length && (
@@ -186,7 +181,7 @@ const Uploader = ({
                     <div className="w-3/5 max-w-md">
                         <div className="flex items-center mb-2">
                             <Image
-                                className="mr-2"
+                                className="mr-2 select-none"
                                 src={`./assets/folder.svg`}
                                 height={18}
                                 width={18}
@@ -201,7 +196,7 @@ const Uploader = ({
                         </div>
                         <div className="flex items-center">
                             <Image
-                                className="mr-2"
+                                className="mr-2 select-none"
                                 src={`./assets/database.svg`}
                                 height={18}
                                 width={18}
@@ -230,16 +225,18 @@ const Uploader = ({
                             />
                         </div>
                     )}
-                    {files.length > 0 && (
-                        <div className="flex items-center justify-center select-none">
-                            <Image
-                                src={`./assets/check.svg`}
-                                width={20}
-                                height={20}
-                                alt="Conversion done"
-                            />
-                        </div>
-                    )}
+                    {files.length > 0 &&
+                        files.length === uploadedFiles.length &&
+                        !err && (
+                            <div className="flex items-center justify-center select-none">
+                                <Image
+                                    src={`./assets/check.svg`}
+                                    width={20}
+                                    height={20}
+                                    alt="Conversion done"
+                                />
+                            </div>
+                        )}
                     {err && (
                         <div className="flex items-center justify-center select-none">
                             <Image
@@ -252,7 +249,20 @@ const Uploader = ({
                     )}
                 </div>
             )}
-            {fileName && (
+            {uploadedFiles.length > 0 && (
+                <Image
+                    src={"./assets/loader.svg"}
+                    className={`opacity-0 ${
+                        isActive && !err && "opacity-100"
+                    } animate-spin select-none`}
+                    width={20}
+                    height={20}
+                    alt="loading"
+                />
+            )}
+
+            {((files.length > 0 && files.length === uploadedFiles.length) ||
+                err) && (
                 <Image
                     src={"./assets/refresh.svg"}
                     className="cursor-pointer"

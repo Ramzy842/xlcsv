@@ -1,81 +1,20 @@
 "use client";
-// import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import Image from "next/image";
 import File from "./File";
-import JSZip, { file } from "jszip";
+import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { useState } from "react";
 import {
     adjectives,
-    animals,
     colors,
     uniqueNamesGenerator,
 } from "unique-names-generator";
+import { characters } from "../utils";
 
 const Files = ({ files, folderName }) => {
-    // const [storedFiles, setStoredFiles] = useState({});
     const storeAndZip = async (files_csv) => {
         let storedFiles = {};
-        const characters = [
-            "iron-man",
-            "captain-america",
-            "thor",
-            "black-widow",
-            "spider-man",
-            "hulk",
-            "wolverine",
-            "black-panther",
-            "doctor-strange",
-            "scarlet-witch",
-            "falcon",
-            "winter-soldier",
-            "vision",
-            "ant-man",
-            "wasp",
-            "captain-marvel",
-            "deadpool",
-            "venom",
-            "daredevil",
-            "elektra",
-            "punisher",
-            "blade",
-            "ghost-rider",
-            "loki",
-            "thanos",
-            "magneto",
-            "professor-x",
-            "cyclops",
-            "jean-grey",
-            "storm",
-            "beast",
-            "ice-man",
-            "angel",
-            "colossus",
-            "rogue",
-            "gambit",
-            "mystique",
-            "superman",
-            "batman",
-            "wonder-woman",
-            "aquaman",
-            "flash",
-            "green-lantern",
-            "cyborg",
-            "shazam",
-            "harley-quinn",
-            "joker",
-            "poison-ivy",
-            "two-face",
-            "riddler",
-            "penguin",
-            "scarecrow",
-            "bane",
-            "darkseid",
-            "lex-luthor",
-            "catwoman",
-            "martian-manhunter",
-        ];
+        
         for (let x = 0; x < files.length; x++) {
             storedFiles[files[x].name] = files_csv[x];
         }
@@ -89,8 +28,7 @@ const Files = ({ files, folderName }) => {
             const randomName = uniqueNamesGenerator({
                 dictionaries: [adjectives, colors, characters],
             });
-            saveAs(zipBlob, folderName ? folderName : randomName); // Replace with your desired zip filename
-            // Clear stored content after download
+            saveAs(zipBlob, folderName ? folderName : randomName);
         }
     };
     return (
@@ -99,8 +37,6 @@ const Files = ({ files, folderName }) => {
                 files && files.length && "opacity-100"
             } `}
         >
-            {/* <div className="bg-black absolute top-0 left-0 right-0 bottom-0 opacity-50 rounded-t-xl">
-            </div> */}
             <div className="flex justify-between mb-2">
                 <div className="flex items-center">
                     <h1 className="font-extrabold text-xl tracking-wide white mr-2 z-40">
@@ -130,7 +66,7 @@ const Files = ({ files, folderName }) => {
                     }}
                     className={`${
                         files.length ? "flex" : "hidden"
-                    } items-center bg-green-600 py-2 px-3 text-sm text-white z-40 rounded-sm hover:bg-black group transition-all outline-none`}
+                    } items-center bg-green-600 py-2 px-3 text-sm text-white z-40 rounded-sm hover:bg-green-800 group transition-all outline-none`}
                 >
                     Download All
                     <Image

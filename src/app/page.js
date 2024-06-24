@@ -11,11 +11,12 @@ export default function Home() {
     const [files, setFiles] = useState([]);
     const [err, setErr] = useState("");
     const [folderName, setFolderName] = useState("");
+    const [uploadedFiles, setUploadedFiles] = useState([]);
     return (
         <>
-            <Header />
-            {err && <Error err={err} />}
             <TimerProvider>
+                <Header files={files} err={err} />
+                {err && <Error err={err} />}
                 <Uploader
                     files={files}
                     setFiles={setFiles}
@@ -23,11 +24,20 @@ export default function Home() {
                     err={err}
                     folderName={folderName}
                     setFolderName={setFolderName}
+                    uploadedFiles={uploadedFiles}
+                    setUploadedFiles={setUploadedFiles}
                 />
-                <Timer files={files} />
+                <Timer
+                    files={files}
+                    uploadedFiles={uploadedFiles}
+                    setUploadedFiles={setUploadedFiles}
+                />
             </TimerProvider>
-
-            <Files files={files} folderName={folderName} />
+            <Files
+                files={files}
+                folderName={folderName}
+                uploadedFiles={uploadedFiles}
+            />
         </>
     );
 }
