@@ -30,7 +30,6 @@ const Header = ({ err }) => {
             setProgressBarWidth(100);
             setIsReset(true);
         }
-        console.log(progressBarWidth);
     }, [progressBarWidth]);
 
     useEffect(() => {
