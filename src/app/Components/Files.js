@@ -9,28 +9,40 @@ import {
     colors,
     uniqueNamesGenerator,
 } from "unique-names-generator";
-import { characters } from "../utils";
+import { characters, delay } from "../utils";
+import { useEffect, useState } from "react";
 
 const Files = ({ files, folderName }) => {
-    const storeAndZip = async (files_csv) => {
+    const [isWaitingDownload, setIsWaitingDownload] = useState(false);
+    const storeAndZip = async () => {
+        await delay(50);
+        const files_csv = files.map((file) => {
+            const tmpFile = XLSX.write(file.downloadReqs.new_wb, {
+                bookType: "csv",
+                type: "binary",
+            });
+            return tmpFile;
+        });
         let storedFiles = {};
-        
         for (let x = 0; x < files.length; x++) {
             storedFiles[files[x].name] = files_csv[x];
         }
-        if (storedFiles) {
-            const zip = new JSZip();
-            for (const fileName in storedFiles) {
-                zip.file(fileName, storedFiles[fileName], { binary: true });
-            }
-            const zipBlob = await zip.generateAsync({ type: "blob" });
-
-            const randomName = uniqueNamesGenerator({
-                dictionaries: [adjectives, colors, characters],
-            });
-            saveAs(zipBlob, folderName ? folderName : randomName);
+        const zip = new JSZip();
+        for (const fileName in storedFiles) {
+            zip.file(fileName, storedFiles[fileName], { binary: true });
         }
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const randomName = uniqueNamesGenerator({
+            dictionaries: [adjectives, colors, characters],
+        });
+        saveAs(zipBlob, folderName ? folderName : randomName);
+        setIsWaitingDownload(false);
     };
+
+    useEffect(() => {
+        if (isWaitingDownload) storeAndZip();
+    }, [isWaitingDownload]);
+
     return (
         <div
             className={`max-w-6xl bg-files bg-cover bg-no-repeat mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-xl p-6 drop-shadow-2xl opacity-0 transition-all ${
@@ -51,32 +63,41 @@ const Files = ({ files, folderName }) => {
                     />
                 </div>
 
-                <button
-                    onClick={() => {
-                        const files_csv = [];
-                        for (let x = 0; x < files.length; x++) {
-                            files_csv.push(
-                                XLSX.write(files[x].downloadReqs.new_wb, {
-                                    bookType: "csv",
-                                    type: "binary",
-                                })
-                            );
-                        }
-                        storeAndZip(files_csv);
-                    }}
-                    className={`${
-                        files.length ? "flex" : "hidden"
-                    } items-center bg-green-600 py-2 px-3 text-sm text-white z-40 rounded-sm hover:bg-green-800 group transition-all outline-none`}
-                >
-                    Download All
-                    <Image
-                        className="ml-3"
-                        src={`./assets/downloadAll.svg`}
-                        height={18}
-                        width={18}
-                        alt="download all files"
-                    />
-                </button>
+                {isWaitingDownload ? (
+                    <button
+                        disabled
+                        className={`${
+                            files.length ? "flex" : "hidden"
+                        } items-center bg-green-600 py-2 px-3 text-sm text-white z-40 rounded-sm outline-none`}
+                    >
+                        Preparing Download
+                        <Image
+                            className="ml-3 animate-spin"
+                            src={`./assets/loader.svg`}
+                            height={18}
+                            width={18}
+                            alt="preparing download"
+                        />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => {
+                            setIsWaitingDownload(true);
+                        }}
+                        className={`${
+                            files.length ? "flex" : "hidden"
+                        } items-center bg-green-600 py-2 px-3 text-sm text-white z-40 rounded-sm hover:bg-green-800 group outline-none`}
+                    >
+                        Download All
+                        <Image
+                            className="ml-3"
+                            src={`./assets/downloadAll.svg`}
+                            height={18}
+                            width={18}
+                            alt="download all files"
+                        />
+                    </button>
+                )}
             </div>
 
             {files.length ? (
