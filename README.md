@@ -14,14 +14,14 @@
 
 1.  **Open this web app in your browser.**
 2.  **Drag and drop your XLSX files, folders containing XLSX files, or a combination of both into the designated area.**
-3.  **Click the "Convert Files" button.**
+3.  **Click the "Start conversion" button.**
 4.  **Sit back and relax while the progress bar and loader keep you updated on the conversion.**
 
 **Once converted:**
 
 -   A list of your converted CSV files will appear.
--   You can download each file individually by clicking the corresponding "Download" button next to each file.
--   Alternatively, click the "Download All" button to get all the converted CSVs zipped into a single file for easy download.
+-   You can download each file individually by clicking the corresponding download icon next to each file.
+-   Alternatively, click the "Download All" button to get all the converted CSVs zipped into a single folder for easy download.
 
 **Contributing:**
 
