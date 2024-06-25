@@ -8,15 +8,18 @@ const Header = ({ err }) => {
     useEffect(() => {
         if (err) setIsActive(false);
         let timeoutId = null;
-        timeoutId = setInterval(() => {
-            if (
-                !err &&
-                progressBarWidth !== 100 &&
-                !(progressBarWidth < 0 || progressBarWidth > 100) &&
-                isActive
-            )
+        if (
+            !err &&
+            progressBarWidth !== 100 &&
+            !(progressBarWidth < 0 || progressBarWidth > 100) &&
+            isActive && !isReset
+        )
+            timeoutId = setInterval(() => {
                 setProgressBarWidth((prev) => prev + 1);
-        }, 1);
+            }, 1);
+        else if (!isActive) {
+            setProgressBarWidth(0);
+        }
         return () => clearTimeout(timeoutId);
     }, [isActive]);
 
@@ -27,6 +30,7 @@ const Header = ({ err }) => {
             setProgressBarWidth(100);
             setIsReset(true);
         }
+        console.log(progressBarWidth);
     }, [progressBarWidth]);
 
     useEffect(() => {
