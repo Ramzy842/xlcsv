@@ -19,20 +19,20 @@ const File = ({ file }) => {
     return (
         <div className="w-full bg-black/40 backdrop-blur-md	 rounded-sm flex justify-between items-center px-2 mb-2 py-1 drop-shadow-lg z-40">
             <p className="text-white z-40 text-sm">{name}</p>
-            <button
-                onClick={() => {
-                    setIsWaitingDownload(true);
-                }}
-            >
-                {isWaitingDownload ? (
-                    <Image
-                        className="ml-3 animate-spin"
-                        src={`./assets/loader.svg`}
-                        height={18}
-                        width={18}
-                        alt="preparing download"
-                    />
-                ) : (
+            {isWaitingDownload ? (
+                <Image
+                    className="ml-3 animate-spin"
+                    src={`./assets/loader.svg`}
+                    height={18}
+                    width={18}
+                    alt="preparing download"
+                />
+            ) : (
+                <button
+                    onClick={() => {
+                        setIsWaitingDownload(true);
+                    }}
+                >
                     <Image
                         priority={true}
                         src={`./assets/upload.svg`}
@@ -41,8 +41,8 @@ const File = ({ file }) => {
                         height={18}
                         alt="download file"
                     />
-                )}
-            </button>
+                </button>
+            )}
         </div>
     );
 };
