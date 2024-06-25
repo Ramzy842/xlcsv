@@ -2,10 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { TimerContext } from "../Context";
 
 const Header = ({ err }) => {
-    const { isActive } = useContext(TimerContext);
+    const { isActive, setIsActive } = useContext(TimerContext);
     const [progressBarWidth, setProgressBarWidth] = useState(0);
     const [isReset, setIsReset] = useState(false);
     useEffect(() => {
+        if (err) setIsActive(false);
         let timeoutId = null;
         timeoutId = setInterval(() => {
             if (
@@ -33,7 +34,7 @@ const Header = ({ err }) => {
             setTimeout(() => {
                 setProgressBarWidth(0);
             }, 2000);
-            setIsReset(false)
+            setIsReset(false);
         }
     }, [isReset]);
 
@@ -46,7 +47,12 @@ const Header = ({ err }) => {
                 width: `${progressBarWidth}%`,
             }}
         >
-            <a className="bg-black font-orbitron text-2xl py-1 tracking-[.5em] w-screen block" href="/">XLCSV</a>
+            <a
+                className="bg-black font-orbitron text-2xl py-1 tracking-[.5em] w-screen block"
+                href="/"
+            >
+                XLCSV
+            </a>
         </div>
     );
 };

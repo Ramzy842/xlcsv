@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import * as XLSX from "xlsx";
 import { TimerContext } from "../Context";
-import { convertBytes, getTotalSize } from "../utils";
+import { convertBytes, delay, getTotalSize } from "../utils";
 
 const Uploader = ({
     files,
@@ -113,9 +113,13 @@ const Uploader = ({
             }
         }
     }
-
+    useEffect(() => {
+        if (err) {
+            setIsActive(false);
+        }
+    }, [err]);
     function handleErr(err) {
-        setIsActive(false);
+        setIsActive(false)
         if (err.message === "Sheet name cannot exceed 31 chars")
             setErr("File name should not exceed 31 letters");
         else setErr(err.message);
