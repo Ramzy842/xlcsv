@@ -73,8 +73,11 @@ const Uploader = ({
         let worksheet = wb.Sheets[first_sheet_name];
         let jsonData = XLSX.utils.sheet_to_json(worksheet, {
             raw: true,
+            header: 1,
         });
-        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
+        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, {
+            skipHeader: true,
+        });
         let new_wb = XLSX.utils.book_new();
         let temp_name = null;
         if (file) temp_name = file.name;
@@ -119,7 +122,7 @@ const Uploader = ({
         }
     }, [err]);
     function handleErr(err) {
-        setIsActive(false)
+        setIsActive(false);
         if (err.message === "Sheet name cannot exceed 31 chars")
             setErr("File name should not exceed 31 letters");
         else setErr(err.message);
