@@ -24,6 +24,11 @@ const Uploader = ({
     function GetFileTree(item, path) {
         path = path || "";
         if (item.isFile) {
+            if (!isExcelFile(item.fullPath)) {
+                handleRefresh();
+                return;
+            }
+
             item.file(function (file) {
                 setUploadedFiles((prev) => [...prev, file]);
             });
@@ -36,6 +41,11 @@ const Uploader = ({
                 }
             });
         }
+    }
+    function isExcelFile(file) {
+        const extension = file.substring(file.lastIndexOf("."));
+        if (extension == ".xls" || extension == ".xlsx") return true;
+        return false;
     }
     function handleUploadedFiles(e) {
         e.stopPropagation();
@@ -85,7 +95,7 @@ const Uploader = ({
             0,
             temp_name.lastIndexOf(".")
         );
-        XLSX.utils.book_append_sheet(new_wb, newWorkSheet, fileNameWithoutExt);
+        XLSX.utils.book_append_sheet(new_wb, newWorkSheet, "sheet");
         setTempFiles((prev) => [
             ...prev,
             {
@@ -269,7 +279,7 @@ const Uploader = ({
             )}
 
             {((files.length > 0 && files.length === uploadedFiles.length) ||
-                err) && (
+                (err && uploadedFiles.length > 0)) && (
                 <Image
                     src={"./assets/refresh.svg"}
                     className="cursor-pointer"

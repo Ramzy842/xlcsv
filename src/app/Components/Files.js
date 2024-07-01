@@ -4,15 +4,10 @@ import Image from "next/image";
 import File from "./File";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import {
-    adjectives,
-    colors,
-    uniqueNamesGenerator,
-} from "unique-names-generator";
-import { characters, delay } from "../utils";
+import { delay } from "../utils";
 import { useEffect, useState } from "react";
 
-const Files = ({ files, folderName }) => {
+const Files = ({ files }) => {
     const [isWaitingDownload, setIsWaitingDownload] = useState(false);
     const storeAndZip = async () => {
         await delay(50);
@@ -32,10 +27,7 @@ const Files = ({ files, folderName }) => {
             zip.file(fileName, storedFiles[fileName], { binary: true });
         }
         const zipBlob = await zip.generateAsync({ type: "blob" });
-        const randomName = uniqueNamesGenerator({
-            dictionaries: [adjectives, colors, characters],
-        });
-        saveAs(zipBlob, folderName ? folderName : randomName);
+        saveAs(zipBlob, "XLCSV-converted-files");
         setIsWaitingDownload(false);
     };
 
