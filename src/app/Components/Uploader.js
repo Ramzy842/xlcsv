@@ -50,6 +50,7 @@ const Uploader = ({
     function handleUploadedFiles(e) {
         e.stopPropagation();
         e.preventDefault();
+        handleRefresh();
         if (e.type === "dragenter" || e.type === "dragover")
             setDropStatus("border-4 border-green-400");
         else setDropStatus("");
@@ -62,7 +63,6 @@ const Uploader = ({
 
     useEffect(() => {
         if (uploadedFiles.length && uploadedFiles[0]) handleInput();
-        setDropStatus("");
     }, [uploadedFiles]);
 
     useEffect(() => {
@@ -111,6 +111,10 @@ const Uploader = ({
     function handler(e) {
         e.stopPropagation();
         e.preventDefault();
+        if (e.target.nodeName == "DIV")
+            e.target.classList.add("hidden");
+        else
+            e.target.parentNode.classList.add("hidden");
         setIsActive(true);
         for (let x = 0; x < uploadedFiles.length; x++) {
             const isCorrectFileExt =
@@ -159,6 +163,10 @@ const Uploader = ({
     return (
         <div
             id="upload-zone"
+            onDragEnter={handleUploadedFiles}
+            onDragOver={handleUploadedFiles}
+            onDrop={handleUploadedFiles}
+            onDragLeave={handleUploadedFiles}
             className={`${
                 !fileName && "w-120 h-40 p-0"
             } flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
@@ -174,13 +182,7 @@ const Uploader = ({
             } ${dropStatus} ${err && "border-b-4 w-auto border-red-500"} `}
         >
             {!uploadedFiles.length && (
-                <div
-                    className="flex flex-col items-center w-full h-full justify-center"
-                    onDragEnter={handleUploadedFiles}
-                    onDragOver={handleUploadedFiles}
-                    onDrop={handleUploadedFiles}
-                    onDragLeave={handleUploadedFiles}
-                >
+                <div className="flex flex-col items-center w-full h-full justify-center">
                     <p className="font-semibold mb-4 text-white ">
                         Drop Your Files Here
                     </p>
@@ -193,7 +195,7 @@ const Uploader = ({
                     />
                 </div>
             )}
-            {fileName && (
+            {fileName && uploadedFiles.length > 0 && (
                 <div className="flex text-white justify-between w-full  ">
                     <div className="w-3/5 max-w-md">
                         <div className="flex items-center mb-2">
