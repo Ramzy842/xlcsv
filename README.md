@@ -12,7 +12,7 @@
 
 **Getting Started:**
 
-1.  **Open this web app in your browser.**
+1.  **Open https://xlcsv.vercel.app in your browser.**
 2.  **Drag and drop your XLSX files, folders containing XLSX files, or a combination of both into the designated area.**
 3.  **Click the "Start conversion" button.**
 4.  **Sit back and relax while the progress bar and loader keep you updated on the conversion.**
