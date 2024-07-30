@@ -4,66 +4,6 @@ function getTotalSize(uploadedFiles) {
     return result;
 }
 
-const characters = [
-    "iron-man",
-    "captain-america",
-    "thor",
-    "black-widow",
-    "spider-man",
-    "hulk",
-    "wolverine",
-    "black-panther",
-    "doctor-strange",
-    "scarlet-witch",
-    "falcon",
-    "winter-soldier",
-    "vision",
-    "ant-man",
-    "wasp",
-    "captain-marvel",
-    "deadpool",
-    "venom",
-    "daredevil",
-    "elektra",
-    "punisher",
-    "blade",
-    "ghost-rider",
-    "loki",
-    "thanos",
-    "magneto",
-    "professor-x",
-    "cyclops",
-    "jean-grey",
-    "storm",
-    "beast",
-    "ice-man",
-    "angel",
-    "colossus",
-    "rogue",
-    "gambit",
-    "mystique",
-    "superman",
-    "batman",
-    "wonder-woman",
-    "aquaman",
-    "flash",
-    "green-lantern",
-    "cyborg",
-    "shazam",
-    "harley-quinn",
-    "joker",
-    "poison-ivy",
-    "two-face",
-    "riddler",
-    "penguin",
-    "scarecrow",
-    "bane",
-    "darkseid",
-    "lex-luthor",
-    "catwoman",
-    "martian-manhunter",
-];
-
 function convertBytes(value) {
     const units = {
         KB: 1024,
@@ -83,4 +23,4 @@ function convertBytes(value) {
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-export { getTotalSize, convertBytes, delay, characters };
+export { getTotalSize, convertBytes, delay };
