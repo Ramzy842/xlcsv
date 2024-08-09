@@ -1,5 +1,5 @@
 
-## Awesome XLSX to CSV Converter
+## XLSX to CSV Converter
 
 **What it is:** A user-friendly web application written in NextJS that converts your Excel (XLSX) files to a more manageable CSV format. It can handle single files, multiple files, entire folders, and even a combination of folders and files - all in one go!
 
