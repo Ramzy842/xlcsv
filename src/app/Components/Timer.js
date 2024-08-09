@@ -33,12 +33,12 @@ const Timer = ({ files, uploadedFiles }) => {
                 src={`./assets/clock.svg`}
                 width={24}
                 height={24}
-                className="select-none mr-2"
+                className="select-none mr-1"
                 alt="clock"
             />
-            <p className="text-white font-semibold">
+            <p className="text-white">
                 Converted in{" "}
-                <span className="text-green-800 bg-green-300 px-2 font-bold">
+                <span className="text-green-800 bg-green-400 px-2 font-bold">
                     {elapsedTime.toFixed(1)} sec
                 </span>
             </p>

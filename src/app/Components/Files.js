@@ -37,13 +37,13 @@ const Files = ({ files }) => {
 
     return (
         <div
-            className={`max-w-6xl bg-files bg-cover bg-no-repeat mx-auto absolute h-1/2 bottom-0 right-0 left-0 rounded-t-xl p-6 drop-shadow-2xl opacity-0 transition-all ${
+            className={` border border-b-0 bg-teal-700 max-w-5xl bg-files bg-cover bg-no-repeat mx-auto absolute h-1/2 bottom-8 right-0 left-0 rounded-t-xl p-6 drop-shadow-2xl opacity-0 transition-all ${
                 files && files.length && "opacity-100"
             } `}
         >
             <div className="flex justify-between mb-2">
                 <div className="flex items-center">
-                    <h1 className="font-extrabold text-xl tracking-wide white mr-2 z-40">
+                    <h1 className="font-semibold text-xl tracking-wide white mr-2 z-40">
                         Files
                     </h1>
                     <Image

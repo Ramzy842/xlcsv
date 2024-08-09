@@ -51,7 +51,7 @@ const Header = ({ err }) => {
             }}
         >
             <a
-                className="bg-black font-orbitron text-2xl py-1 tracking-[.5em] w-screen block"
+                className="bg-black font-orbitron text-2xl py-1 tracking-[.3em] w-screen block"
                 href="/"
             >
                 XLCSV

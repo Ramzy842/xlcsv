@@ -165,9 +165,9 @@ const Uploader = ({
             onDragOver={handleUploadedFiles}
             onDrop={handleUploadedFiles}
             onDragLeave={handleUploadedFiles}
-            className={`${
+            className={`select-none ${
                 !fileName && "w-120 h-40 p-0"
-            } flex flex-col items-center justify-center mx-auto mt-16 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
+            } flex flex-col items-center justify-center mx-auto mt-8 bg-black/70 backdrop-blur-xl rounded-md p-4 drop-shadow-2xl max-w-lg ${
                 fileName &&
                 !files.length &&
                 !err &&
@@ -277,7 +277,6 @@ const Uploader = ({
                     alt="loading"
                 />
             )}
-
             {((files.length > 0 && files.length === uploadedFiles.length) ||
                 (err && uploadedFiles.length > 0)) && (
                 <Image
