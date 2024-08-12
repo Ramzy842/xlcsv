@@ -27,7 +27,7 @@ const Steps = () => {
     return (
         <ul className="bg-cyan flex justify-evenly ">
             {steps.map((step) => (
-                <li className="p-4 mx-2 text-center w-3/4 max-w-lg flex flex-col items-center ">
+                <li key={step.id} className="p-4 mx-2 text-center w-3/4 max-w-lg flex flex-col items-center ">
                     <p className="text-green-600 font-semibold bg-black w-full mb-2 select-none">Step {step.number}</p>
                     <h1 className="text-teal-600 mb-2 font-bold w-full select-none">{step.title}</h1>
                     <p className="text-sm font-light text-gray-200 w-full select-none">{step.description}</p>

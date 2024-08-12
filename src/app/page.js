@@ -14,12 +14,13 @@ export default function Home() {
     const [folderName, setFolderName] = useState("");
     const [uploadedFiles, setUploadedFiles] = useState([]);
     return (
-        <div className="min-h-screen bg-gradient-to-r from-teal-800 to-cyan-900">
+        <div className="min-h-screen ">
+            <div className="absolute top-0 bottom-0 right-0 left-0 bg-black/40 -z-50" />
             <TimerProvider>
                 <Header files={files} err={err} />
                 {err && <Error err={err} />}
-                <div className="mx-auto max-w-3xl text-center text-white leading-snug mt-16 select-none">
-                    <h1 className="text-2xl">
+                <div className="mx-auto w-full text-center  leading-snug mt-8 select-none">
+                    <h1 className="text-3xl text-white py-4 w-full z-50">
                         XLS/XLSX (Excel) to CSV Converter{" "}
                     </h1>
                 </div>

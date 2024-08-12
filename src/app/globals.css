@@ -45,7 +45,7 @@ body {
     height: 100vh;
     max-height: 100vh;
     overflow-y: hidden;
-    /* background-image: url("/assets/mystical.jpg"); */
+    background-image: url("/assets/mystical.jpg");
     background-size: cover;
 }
 

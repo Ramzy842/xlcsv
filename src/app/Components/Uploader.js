@@ -82,10 +82,11 @@ const Uploader = ({
         const first_sheet_name = wb.SheetNames[0];
         let worksheet = wb.Sheets[first_sheet_name];
         let jsonData = XLSX.utils.sheet_to_json(worksheet, {
+            raw: true,
             dateNF:'yyyy-mm-dd',
-            UTC:true
+            UTC:true,
         });
-        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData);
+        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, {UTC: true});
         let new_wb = XLSX.utils.book_new();
         let temp_name = null;
         if (file) temp_name = file.name;
