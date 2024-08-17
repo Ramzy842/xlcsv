@@ -83,10 +83,13 @@ const Uploader = ({
         let worksheet = wb.Sheets[first_sheet_name];
         let jsonData = XLSX.utils.sheet_to_json(worksheet, {
             raw: true,
-            dateNF:'yyyy-mm-dd',
-            UTC:true,
+            dateNF: "YYYY-MM-DD",
+            defval: "",
+            blankrows: true,
+            skipHidden: false,
+            header: "A"
         });
-        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, {UTC: true});
+        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, { UTC: true, skipHeader: true});
         let new_wb = XLSX.utils.book_new();
         let temp_name = null;
         if (file) temp_name = file.name;
@@ -110,10 +113,8 @@ const Uploader = ({
     function handler(e) {
         e.stopPropagation();
         e.preventDefault();
-        if (e.target.nodeName == "DIV")
-            e.target.classList.add("hidden");
-        else
-            e.target.parentNode.classList.add("hidden");
+        if (e.target.nodeName == "DIV") e.target.classList.add("hidden");
+        else e.target.parentNode.classList.add("hidden");
         setIsActive(true);
         for (let x = 0; x < uploadedFiles.length; x++) {
             const isCorrectFileExt =
