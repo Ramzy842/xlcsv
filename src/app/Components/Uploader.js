@@ -78,18 +78,17 @@ const Uploader = ({
 
     function convertFile(res, file) {
         let data = new Uint8Array(res);
-        let wb = XLSX.read(data, { type: "array" });
+        let wb = XLSX.read(data, {cellDates: true, type: "array" });
         const first_sheet_name = wb.SheetNames[0];
         let worksheet = wb.Sheets[first_sheet_name];
         let jsonData = XLSX.utils.sheet_to_json(worksheet, {
             raw: true,
-            dateNF: "YYYY-MM-DD",
             defval: "",
             blankrows: true,
             skipHidden: false,
             header: "A"
         });
-        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, { UTC: true, skipHeader: true});
+        let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, { skipHeader: true});
         let new_wb = XLSX.utils.book_new();
         let temp_name = null;
         if (file) temp_name = file.name;
