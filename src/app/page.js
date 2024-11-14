@@ -21,7 +21,7 @@ export default function Home() {
                 {err && <Error err={err} />}
                 <div className="mx-auto w-full text-center  leading-snug mt-8 select-none">
                     <h1 className="text-3xl text-white py-4 w-full z-50">
-                        XLS/XLSX (Excel) to CSV Converter{" "}
+                        XLS/XLSX/CSV Converter
                     </h1>
                 </div>
                 <Uploader
