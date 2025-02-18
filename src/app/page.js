@@ -47,7 +47,7 @@ export default function Home() {
                 uploadedFiles={uploadedFiles}
             />
             <footer className="absolute bottom-0 bg-black w-full flex justify-center items-center p-1">
-                <p className="mr-2">Made by Ramzi Chahbani</p>
+                <p className="mr-2 text-white">Made by Ramzi Chahbani</p>
                 <a href="https://github.com/Ramzy842/xlcsv">
                     <img src="./assets/github.svg" className="" />
                 </a>

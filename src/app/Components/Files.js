@@ -43,7 +43,7 @@ const Files = ({ files }) => {
         >
             <div className="flex justify-between mb-2">
                 <div className="flex items-center">
-                    <h1 className="font-semibold text-xl tracking-wide white mr-2 z-40">
+                    <h1 className="font-semibold text-xl text-white tracking-wide white mr-2 z-40">
                         Files
                     </h1>
                     <Image

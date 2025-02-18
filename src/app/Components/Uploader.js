@@ -76,15 +76,16 @@ const Uploader = ({
         }
     }, [tempFiles]);
 
-    // function trimData(json) {
-    //     json.forEach(obj => {
-    //         for (let property in obj) {
-    //             if (typeof obj[property] === 'string') {
-    //                 obj[property] = obj[property].trim();
-    //             }
-    //         }
-    //     });
-    // }
+    function trimData(json) {
+        json.forEach(obj => {
+            for (let property in obj) {
+                if (typeof obj[property] === 'string') {
+                    property = property.trim();
+                    obj[property] = obj[property].trim();
+                }
+            }
+        });
+    }
 
     function convertFile(res, file) {
         let data = new Uint8Array(res);
@@ -98,7 +99,7 @@ const Uploader = ({
             skipHidden: false,
             header: "A"
         });
-        // trimData(jsonData)
+        trimData(jsonData)
         let newWorkSheet = XLSX.utils.json_to_sheet(jsonData, { skipHeader: true});
         let new_wb = XLSX.utils.book_new();
         let temp_name = null;
@@ -135,7 +136,7 @@ const Uploader = ({
             if (uploadedFiles[x].type && isCorrectFileExt) {
                 uploadedFiles[x]
                     .arrayBuffer()
-                    .then((res) => {convertFile(res, uploadedFiles[x]); console.log(res)})
+                    .then((res) => {convertFile(res, uploadedFiles[x])})
                     .catch(handleErr);
             }
         }
